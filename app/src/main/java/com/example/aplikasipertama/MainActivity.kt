@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 //            .into(imageView)
 
         button.setOnClickListener {
-            textView.text = "Ohayou"
             textView.text = "Hello World"
         }
 

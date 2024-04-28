@@ -18,7 +18,7 @@ interface StudentDao {
     fun getStudents(): List<StudentEntity>
 
     @Query("SELECT * FROM students WHERE name LIKE :name")
-    fun getStudentByName(name: String): List<StudentEntity>
+    fun getStudentByName(name: String): StudentEntity
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(student: StudentEntity)

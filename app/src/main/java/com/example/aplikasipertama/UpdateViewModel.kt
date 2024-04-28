@@ -16,16 +16,14 @@ class UpdateViewModel(private val repository: StudentRepository) : ViewModel() {
     val studentUpdated: LiveData<Boolean>
         get() = _studentUpdated
 
-    fun updateStudent(student: Student) {
+    fun update(student: Student) {
         viewModelScope.launch {
             repository.update(student).collect {
                 when (it) {
-                    is Resource.Error -> {
-                        _studentUpdated.value = false
-                        Log.e("UpdateViewModel: Update", it.error)
-                    }
+                    is Resource.Error -> {}
                     Resource.Loading -> {}
                     is Resource.Success -> {
+                        Log.d("UpdateViewModel: update", "Success")
                         _studentUpdated.value = true
                     }
                 }
