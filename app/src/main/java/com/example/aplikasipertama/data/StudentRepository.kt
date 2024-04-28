@@ -3,6 +3,9 @@ package com.example.aplikasipertama.data
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.aplikasipertama.data.room.StudentDao
 import com.example.aplikasipertama.data.room.toModel
 import com.example.aplikasipertama.model.Student
@@ -15,7 +18,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class StudentRepository(
-    private val studentDao: StudentDao,
     private val firestoreDb: FirebaseFirestore
 ) {
     suspend fun insert(student: Student) : Flow<Resource<Unit>> = flow {
@@ -31,13 +33,15 @@ class StudentRepository(
         }
     }
 
-    fun getStudents(): Flow<List<Student>> = flow {
-//      val students = studentDao.getStudents().map { it.toModel() }
-        val ref = firestoreDb.collection("students")
-        val querySnapshot = ref.get().await()
-        if (!querySnapshot.isEmpty) {
-            emit(querySnapshot.toObjects(Student::class.java))
-        }
+    fun getStudents(): Flow<PagingData<Student>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 8
+            ),
+            pagingSourceFactory = {
+                StudentPagingSource(firestoreDb)
+            }
+        ).flow
     }
 
     suspend fun update(student: Student): Flow<Resource<Unit>> = flow {

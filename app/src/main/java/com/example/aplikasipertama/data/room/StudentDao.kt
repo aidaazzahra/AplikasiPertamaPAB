@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import androidx.lifecycle.LiveData
 import com.example.aplikasipertama.model.Student
 
 @Dao
@@ -17,10 +16,10 @@ interface StudentDao {
     @Query("select * from students")
     fun getStudents(): List<StudentEntity>
 
-    @Query("SELECT * FROM students WHERE name LIKE :name")
+    @Query("select * from students where name = :name")
     fun getStudentByName(name: String): StudentEntity
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun update(student: StudentEntity)
 
     @Delete

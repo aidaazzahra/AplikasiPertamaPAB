@@ -5,17 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aplikasipertama.model.Student
-import com.example.aplikasipertama.utils.Resource
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -54,26 +48,27 @@ class ListActivity : AppCompatActivity() {
 //                major = "Sistem dan Teknologi Informasi"
 //            )
 //        )
-
         val listAdapter = ListAdapter()
-        listViewModel.getStudents()
-        listViewModel.students.observe(this) {
-            Log.d("ListActivity", it.toString())
-            listAdapter.setListStudents(it)
-        }
 
         recyclerView = findViewById(R.id.rv_students)
-        recyclerView.setHasFixedSize(true)
         recyclerView.adapter = listAdapter
+
+        listViewModel.getStudents()
+        listViewModel.getStudents().observe(this) {
+            Log.d("ListActivity", it.toString())
+            listAdapter.submitData(lifecycle, it)
+        }
 
         listViewModel.layoutState.observe(this) { layout ->
             when (layout) {
                 LayoutState.LINEAR -> {
                     recyclerView.layoutManager = LinearLayoutManager(this)
                 }
+
                 LayoutState.GRID -> {
                     recyclerView.layoutManager = GridLayoutManager(this, 2)
                 }
+
                 else -> {}
             }
         }

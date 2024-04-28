@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.aplikasipertama.data.StudentRepository
 import com.example.aplikasipertama.model.Student
 import com.example.aplikasipertama.utils.Resource
@@ -15,10 +17,6 @@ enum class LayoutState {
     GRID
 }
 class ListViewModel(private val repository: StudentRepository) : ViewModel() {
-    private var _students = MutableLiveData<List<Student>>()
-    val students: LiveData<List<Student>>
-        get() = _students
-
     private val _layoutState = MutableLiveData<LayoutState>(LayoutState.LINEAR)
     val layoutState: LiveData<LayoutState>
         get() = _layoutState
@@ -31,13 +29,7 @@ class ListViewModel(private val repository: StudentRepository) : ViewModel() {
         }
     }
 
-    fun getStudents() {
-        viewModelScope.launch {
-            repository.getStudents().collect {
-                _students.value = it
-            }
-        }
-    }
+    fun getStudents() = repository.getStudents().asLiveData().cachedIn(viewModelScope)
 
     fun delete(student: Student) {
         viewModelScope.launch {

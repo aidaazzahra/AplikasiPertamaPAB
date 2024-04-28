@@ -21,9 +21,6 @@ class DetailActivity : AppCompatActivity() {
 //          insets
 //        }
 
-//        val name = intent.getStringExtra("NAME")
-//        val major = intent.getStringExtra("MAJOR")
-
         student = intent.getParcelableExtra("STUDENT")
 
         Log.d("DetailActivity", "name ${student?.name}")
